@@ -139,6 +139,8 @@ int main() {
                     // std::cout << "printing ptr values: "<< prev_ptr << st_ptr << "\n";
                     if(output_buffer[st_ptr]==' '){
                         int need_len = (st_ptr-prev_ptr);
+                        // std::cout<<"found space, need len: " << need_len << output_buffer.length() << '\n';
+                        
                         if (need_len >= 1) {
                             arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
                         }
@@ -146,34 +148,19 @@ int main() {
                         
                     }
                     else if(output_buffer[st_ptr] == sq){
-                        // find the first end quote and get the length and push onto buffer
+                        // find the first closing single quote and get the length and push onto buffer
                         int eq_loc = output_buffer.find(sq, st_ptr+1);
-                        // std::cout<<"Ending quote location" << eq_loc;
                         int need_len = eq_loc - st_ptr-1;
+                        // std::cout<<"Ending quote location: " << eq_loc << need_len << output_buffer.length() << " and st_ptr: "<< st_ptr<< '\n';
+
                         arg_buffer.push_back(output_buffer.substr(st_ptr+1, need_len));
-                        st_ptr = eq_loc+1;
+                        st_ptr = eq_loc;
                         prev_ptr = st_ptr+1;
                     }
                 }
                 // now all the spaces and other stuff is gone, and now till the end
                 arg_buffer.push_back(output_buffer.substr(prev_ptr, std::string::npos));
 
-                // arg_buffer.push_back(output_buffer.substr(0,output_buffer.find(sq)));
-                // output_buffer.erase(0, output_buffer.find(sq));
-
-                // while(output_buffer.find(sq)!=std::string::npos){
-                //     // means there is a quoation mark somewhere 
-                //     output_buffer.erase(0, output_buffer.find(sq)+1);
-
-                //     int end = output_buffer.find(sq);
-
-                //     arg_buffer.push_back(output_buffer.substr(0,end));
-                //     output_buffer.erase(0, end);
-                //     // for the remaining, trim it again 
-                //     trim(output_buffer);
-                // }
-                
-                // std::cout<<output_buffer<<"\n";
                 for(const std::string& str_arg : arg_buffer){
                     std::cout << str_arg  << " ";
                 }
