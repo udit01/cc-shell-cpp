@@ -3,6 +3,9 @@
 #include <sstream>
 #include <filesystem>
 #include <vector> 
+#include <algorithm> 
+#include <cctype>
+#include <locale>
 
 using namespace std;
 
@@ -17,6 +20,25 @@ enum validCommands
     invalid,
     // ext_cmd,
 };
+
+// trim from start (in place)
+inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+// trim from end (in place)
+inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+inline void trim(std::string &s) {
+    rtrim(s);
+    ltrim(s);
+}
 
 validCommands isValid(const std::string orig_command){
     // Checking the first chunk of the command
@@ -86,6 +108,8 @@ int main() {
         std::vector<std::string> arg_buffer = {} ; 
         // single quote character
         char sq = '\'';
+        int st_ptr = 0;
+        int prev_ptr = 0; 
         
         switch(isValid(input)){
             case cd:
@@ -104,27 +128,57 @@ int main() {
                 output_buffer = input;
                 // erase till 'echo' and 1 space char 
                 output_buffer.erase(0,output_buffer.find(" ")+1);
+
+                // trim from left and right for leading and trailing white-spaces
+                trim(output_buffer);
                 
                 // put all the arguments in the arg  buffer  before single quote
-                
-                arg_buffer.push_back(output_buffer.substr(0,output_buffer.find(sq)));
-                output_buffer.erase(0, output_buffer.find(sq));
-
-                while(output_buffer.find(sq)!=std::string::npos){
-                    // means there is a quoation mark somewhere 
-                    output_buffer.erase(0, output_buffer.find(sq)+1);
-
-                    int end = output_buffer.find(sq);
-
-                    arg_buffer.push_back(output_buffer.substr(0,end));
-                    output_buffer.erase(0, end);
+                st_ptr = 0;
+                prev_ptr = 0; 
+                for (st_ptr = 0; st_ptr < output_buffer.length(); st_ptr++){
+                    // std::cout << "printing ptr values: "<< prev_ptr << st_ptr << "\n";
+                    if(output_buffer[st_ptr]==' '){
+                        int need_len = (st_ptr-prev_ptr);
+                        if (need_len >= 1) {
+                            arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
+                        }
+                        prev_ptr = st_ptr+1;
+                        
+                    }
+                    else if(output_buffer[st_ptr] == sq){
+                        // find the first end quote and get the length and push onto buffer
+                        int eq_loc = output_buffer.find(sq, st_ptr+1);
+                        // std::cout<<"Ending quote location" << eq_loc;
+                        int need_len = eq_loc - st_ptr-1;
+                        arg_buffer.push_back(output_buffer.substr(st_ptr+1, need_len));
+                        st_ptr = eq_loc+1;
+                        prev_ptr = st_ptr+1;
+                    }
                 }
+                // now all the spaces and other stuff is gone, and now till the end
+                arg_buffer.push_back(output_buffer.substr(prev_ptr, std::string::npos));
+
+                // arg_buffer.push_back(output_buffer.substr(0,output_buffer.find(sq)));
+                // output_buffer.erase(0, output_buffer.find(sq));
+
+                // while(output_buffer.find(sq)!=std::string::npos){
+                //     // means there is a quoation mark somewhere 
+                //     output_buffer.erase(0, output_buffer.find(sq)+1);
+
+                //     int end = output_buffer.find(sq);
+
+                //     arg_buffer.push_back(output_buffer.substr(0,end));
+                //     output_buffer.erase(0, end);
+                //     // for the remaining, trim it again 
+                //     trim(output_buffer);
+                // }
                 
                 // std::cout<<output_buffer<<"\n";
                 for(const std::string& str_arg : arg_buffer){
-                    std::cout << str_arg ;
+                    std::cout << str_arg  << " ";
                 }
                 std::cout << std::endl;
+                arg_buffer.clear();
                 break;
             case exit0:
                 exit=true;
