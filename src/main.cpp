@@ -1,6 +1,8 @@
 #include <iostream>
 
 int main() {
+
+  cost std::string error_message = "command not found"
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
@@ -10,4 +12,6 @@ int main() {
 
   std::string input;
   std::getline(std::cin, input);
+
+  std::cout << input << ": " << error_message << std::endl;
 }
