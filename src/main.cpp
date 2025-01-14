@@ -131,7 +131,9 @@ int main() {
 
                 // trim from left and right for leading and trailing white-spaces
                 trim(output_buffer);
-                
+                // pad with one space
+                // output_buffer = " " + output_buffer;
+                // std::cout<< "output buffer going into the loop: "<< output_buffer << std::endl;
                 // put all the arguments in the arg  buffer  before single quote
                 st_ptr = 0;
                 prev_ptr = 0; 
@@ -141,16 +143,24 @@ int main() {
                         int need_len = (st_ptr-prev_ptr);
                         // std::cout<<"found space, need len: " << need_len << output_buffer.length() << '\n';
                         
-                        if (need_len >= 1) {
+                        if (need_len >= 0) {
                             arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
+                            arg_buffer.push_back(" ");
                         }
                         prev_ptr = st_ptr+1;
-                        
                     }
                     else if(output_buffer[st_ptr] == sq){
+                        // push anything left into the arg buffer 
+                        int need_len = st_ptr - prev_ptr;
+                        
+                        if (need_len >= 0) {
+                            arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
+                            prev_ptr = st_ptr+1;
+                        }
+
                         // find the first closing single quote and get the length and push onto buffer
                         int eq_loc = output_buffer.find(sq, st_ptr+1);
-                        int need_len = eq_loc - st_ptr-1;
+                        need_len = eq_loc - st_ptr-1;
                         // std::cout<<"Ending quote location: " << eq_loc << need_len << output_buffer.length() << " and st_ptr: "<< st_ptr<< '\n';
 
                         arg_buffer.push_back(output_buffer.substr(st_ptr+1, need_len));
@@ -158,11 +168,13 @@ int main() {
                         prev_ptr = st_ptr+1;
                     }
                 }
+                // std::cout<<" now outside loop\n";
                 // now all the spaces and other stuff is gone, and now till the end
+                if (prev_ptr <= output_buffer.length())
                 arg_buffer.push_back(output_buffer.substr(prev_ptr, std::string::npos));
 
                 for(const std::string& str_arg : arg_buffer){
-                    std::cout << str_arg  << " ";
+                    std::cout << str_arg ;
                 }
                 std::cout << std::endl;
                 arg_buffer.clear();
