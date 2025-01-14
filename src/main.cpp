@@ -71,6 +71,7 @@ int main() {
         std::cout << "$ ";
         std::string input;
         std::getline(std::cin, input);
+        std::string first_arg ;
 
         switch(isValid(input)){
             case cd:
@@ -102,10 +103,9 @@ int main() {
                 break;
             case invalid: 
                 // just execute the command if it's present
-                std::string first_arg = input.substr(0, input.find(" "));
-                std::string path_of_first_arg = get_path(first_arg);
+                first_arg = input.substr(0, input.find(" "));
                 // if valid path, then execute, otherwise... just fall through to invalid command
-                if(path_of_first_arg != ""){
+                if(get_path(first_arg) != ""){
                     std::system(input.c_str()); 
                     break;
                 }
