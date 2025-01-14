@@ -60,6 +60,11 @@ std::string get_path(std::string command){
     return "";  
 }
 
+std::filesystem::path get_home_path(){
+    return std::filesystem::path(  std::getenv("HOME") ); 
+}
+
+
 int main() {
 
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -79,12 +84,19 @@ int main() {
         std::string first_arg ;
         std::string second_arg ;
         std::filesystem::file_status status_buffer; 
+        std::filesystem::path path_buffer; 
+
         
         switch(isValid(input)){
             case cd:
                 second_arg = input.substr(input.find(" ")+1, std::string::npos);
                 // now the current directory / working path is set to the new path 
-                status_buffer = std::filesystem::status(second_arg);
+                if (second_arg == "~") {
+                    std::filesystem::current_path(get_home_path());
+                    break;
+                }
+                path_buffer = std::filesystem::path(second_arg);
+                status_buffer = std::filesystem::status(path_buffer);
                 if(std::filesystem::is_directory(status_buffer)) std::filesystem::current_path(second_arg);
                 else std::cout << "cd: " << second_arg << ": No such file or directory\n" ;
                 break;
