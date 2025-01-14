@@ -105,7 +105,7 @@ int main() {
                 }
                 break;
             case pwd:
-                std::cout << std::filesystem::current_path() << std::endl;
+                std::cout << std::filesystem::current_path().string() << std::endl;
                 break;
             case invalid: 
                 // just execute the command if it's present
