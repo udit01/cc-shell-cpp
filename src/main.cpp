@@ -85,8 +85,7 @@ int main() {
                 break;
             case type:
                 input.erase(0,input.find(" ")+1);
-                auto cmdType = isValid(input);
-                if((cmdType!=invalid) ){ 
+                if((isValid(input)!=invalid) ){ 
                     //it's an internal built in cmd
                     std::cout<<input<<" is a shell builtin\n";
                 }
