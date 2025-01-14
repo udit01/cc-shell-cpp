@@ -139,14 +139,22 @@ int main() {
                 prev_ptr = 0; 
                 for (st_ptr = 0; st_ptr < output_buffer.length(); st_ptr++){
                     // std::cout << "printing ptr values: "<< prev_ptr << st_ptr << "\n";
+                    // encounter first space
                     if(output_buffer[st_ptr]==' '){
+
                         int need_len = (st_ptr-prev_ptr);
                         // std::cout<<"found space, need len: " << need_len << output_buffer.length() << '\n';
-                        
+
                         if (need_len >= 1) {
                             arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
-                            arg_buffer.push_back(" ");
                         }
+                        
+                        arg_buffer.push_back(" ");
+                        
+                        // trim following spaces 
+                        while(output_buffer[st_ptr] == ' ') st_ptr++;
+
+                        st_ptr -= 1;
                         prev_ptr = st_ptr+1;
                     }
                     else if(output_buffer[st_ptr] == sq){
@@ -165,7 +173,7 @@ int main() {
 
                         arg_buffer.push_back(output_buffer.substr(st_ptr+1, need_len));
                         st_ptr = eq_loc;
-                        prev_ptr = st_ptr;
+                        prev_ptr = st_ptr+1;
                     }
                 }
                 // std::cout<<" now outside loop\n";
