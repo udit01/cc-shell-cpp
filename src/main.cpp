@@ -67,6 +67,8 @@ int main() {
 
     bool exit = false;
 
+    auto working_path = std::filesystem::current_path().string();
+
     while (!exit){
         // Flush after every std::cout / std:cerr
         std::cout << std::unitbuf;
@@ -75,10 +77,16 @@ int main() {
         std::string input;
         std::getline(std::cin, input);
         std::string first_arg ;
-
+        std::string second_arg ;
+        std::filesystem::file_status status_buffer; 
+        
         switch(isValid(input)){
             case cd:
-
+                second_arg = input.substr(input.find(" "), std::string::npos);
+                // now the current directory / working path is set to the new path 
+                status_buffer = std::filesystem::status(second_arg);
+                if(std::filesystem::is_directory(status_buffer)) working_path = second_arg;
+                else std::cout << "cd: " << second_arg << ": No such file or directory\n" ;
                 break;
             case echo:
                 input.erase(0,input.find(" ")+1);
@@ -105,7 +113,7 @@ int main() {
                 }
                 break;
             case pwd:
-                std::cout << std::filesystem::current_path().string() << std::endl;
+                std::cout << working_path << std::endl;
                 break;
             case invalid: 
                 // just execute the command if it's present
