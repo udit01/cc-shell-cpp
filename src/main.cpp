@@ -55,7 +55,7 @@ int main() {
             }
             std::string output_message = type_arg;
 
-            if((type_arg == exit_prefix) || (type_arg == echo_prefix)){
+            if((type_arg == exit_prefix) || (type_arg == echo_prefix) || (type_arg == type_prefix)){
                 output_message += " " + builtin_command_message;
             }else{
                 output_message += ": " + command_notfound_message;
