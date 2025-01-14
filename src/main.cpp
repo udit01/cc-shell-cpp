@@ -2,7 +2,7 @@
 
 int main() {
 
-  cost std::string error_message = "command not found"
+  const std::string error_message = "command not found"
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
