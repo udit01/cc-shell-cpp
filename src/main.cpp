@@ -5,6 +5,8 @@ int main() {
 
     const std::string error_message = "command not found";
     const std::string exit_prefix = "exit";
+    const std::string echo_prefix = "echo";
+    bool valid_command = false;
 
     while(true) {
         // Flush after every std::cout / std:cerr
@@ -18,15 +20,29 @@ int main() {
         std::getline(std::cin, input);
 
 		int is_prefix_exit = strncmp(exit_prefix.c_str(), input.c_str(), strlen(exit_prefix.c_str()));
-
         if(is_prefix_exit == 0){
+            valid_command = true;
             // If the start of the command, matches the exit, now find the argument
             std::string exit_arg = input.substr(strlen(exit_prefix.c_str()), std::string::npos);
             //std::cout << exit_arg <<std::endl; 
             break;
         }
 
-        std::cout << input << ": " << error_message << std::endl;
+        int is_prefix_echo = strncmp(echo_prefix.c_str(), input.c_str(), strlen(echo_prefix.c_str()));
+        if(is_prefix_echo == 0){
+            valid_command = true;
+            // If the start of the command, matches the echo, now find the argument
+            std::string echo_arg = input.substr(strlen(echo_prefix.c_str()), std::string::npos);
+            // It will have a white space in front
+            if(echo_arg.length()>=1){
+                echo_arg = echo_arg.substr(1, std::string::npos);
+            }
+            std::cout << echo_arg <<std::endl; 
+        }
+
+        if(valid_command == false){
+            std::cout << input << ": " << error_message << std::endl;
+        }
 
     }
 }
