@@ -82,7 +82,7 @@ int main() {
         
         switch(isValid(input)){
             case cd:
-                second_arg = input.substr(input.find(" "), std::string::npos);
+                second_arg = input.substr(input.find(" ")+1, std::string::npos);
                 // now the current directory / working path is set to the new path 
                 status_buffer = std::filesystem::status(second_arg);
                 if(std::filesystem::is_directory(status_buffer)) working_path = second_arg;
