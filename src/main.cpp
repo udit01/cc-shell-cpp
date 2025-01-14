@@ -143,7 +143,7 @@ int main() {
                         int need_len = (st_ptr-prev_ptr);
                         // std::cout<<"found space, need len: " << need_len << output_buffer.length() << '\n';
                         
-                        if (need_len >= 0) {
+                        if (need_len >= 1) {
                             arg_buffer.push_back(output_buffer.substr(prev_ptr, need_len));
                             arg_buffer.push_back(" ");
                         }
