@@ -165,7 +165,7 @@ int main() {
 
                         arg_buffer.push_back(output_buffer.substr(st_ptr+1, need_len));
                         st_ptr = eq_loc;
-                        prev_ptr = st_ptr+1;
+                        prev_ptr = st_ptr;
                     }
                 }
                 // std::cout<<" now outside loop\n";
