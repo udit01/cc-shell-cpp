@@ -101,9 +101,14 @@ int main() {
                 }
                 break;
             case invalid: 
-                // just execute the command 
-                std::system(input.c_str()); 
-                break;
+                // just execute the command if it's present
+                std::string first_arg = input.substr(0, input.find(" "));
+                std::string path_of_first_arg = get_path(first_arg);
+                // if valid path, then execute, otherwise... just fall through to invalid command
+                if(path_of_first_arg != ""){
+                    std::system(input.c_str()); 
+                    break;
+                }
             default:
                 std::cout<<input<<": command not found\n";
                 break;
