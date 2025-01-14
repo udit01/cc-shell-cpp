@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <filesystem>
+#include <vector> 
 
 using namespace std;
 
@@ -16,8 +17,6 @@ enum validCommands
     invalid,
     // ext_cmd,
 };
-
-// std::string external_cmd_path_buffer ; 
 
 validCommands isValid(const std::string orig_command){
     // Checking the first chunk of the command
@@ -39,8 +38,6 @@ validCommands isValid(const std::string orig_command){
     // }
     return invalid;
 }
-
-// std::string valid[4] = {"echo", "cd", "exit0"};
 
 std::string get_path(std::string command){
     std::string path_env = std::getenv("PATH");
@@ -85,7 +82,10 @@ int main() {
         std::string second_arg ;
         std::filesystem::file_status status_buffer; 
         std::filesystem::path path_buffer; 
-
+        std::string output_buffer;
+        std::vector<std::string> arg_buffer = {} ; 
+        // single quote character
+        char sq = '\'';
         
         switch(isValid(input)){
             case cd:
@@ -101,8 +101,30 @@ int main() {
                 else std::cout << "cd: " << second_arg << ": No such file or directory\n" ;
                 break;
             case echo:
-                input.erase(0,input.find(" ")+1);
-                std::cout<<input<<"\n";
+                output_buffer = input;
+                // erase till 'echo' and 1 space char 
+                output_buffer.erase(0,output_buffer.find(" ")+1);
+                
+                // put all the arguments in the arg  buffer  before single quote
+                
+                arg_buffer.push_back(output_buffer.substr(0,output_buffer.find(sq)));
+                output_buffer.erase(0, output_buffer.find(sq));
+
+                while(output_buffer.find(sq)!=std::string::npos){
+                    // means there is a quoation mark somewhere 
+                    output_buffer.erase(0, output_buffer.find(sq)+1);
+
+                    int end = output_buffer.find(sq);
+
+                    arg_buffer.push_back(output_buffer.substr(0,end));
+                    output_buffer.erase(0, end);
+                }
+                
+                // std::cout<<output_buffer<<"\n";
+                for(const std::string& str_arg : arg_buffer){
+                    std::cout << str_arg ;
+                }
+                std::cout << std::endl;
                 break;
             case exit0:
                 exit=true;
