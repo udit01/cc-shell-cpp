@@ -11,6 +11,8 @@ enum validCommands
     cd,
     exit0,
     type,
+    pwd,
+    // invalid is actually the NON-BUILT-IN commands
     invalid,
     // ext_cmd,
 };
@@ -25,6 +27,7 @@ validCommands isValid(const std::string orig_command){
     if(command == "cd") return validCommands::cd;
     if(command == "exit") return validCommands::exit0;
     if(command == "type") return validCommands::type;
+    if(command == "pwd") return validCommands::pwd;
 
     // Don't need to check about the validity, just execute
     // case other type of command check on other paths 
@@ -100,6 +103,9 @@ int main() {
                         std::cout<<input<<" is "<<path<<std::endl;
                     }
                 }
+                break;
+            case pwd:
+                std::cout << std::filesystem::current_path() << std::endl;
                 break;
             case invalid: 
                 // just execute the command if it's present
